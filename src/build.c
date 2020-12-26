@@ -36,7 +36,7 @@ int main(int argc, char** argv)
     system("mkdir -p bin");
 
     const char* exec_name = "space"; 
-    const char* src_files = "src/main.c";
+    const char* src_files = "src/main.c src/bitmap.c src/window.c src/game_state.c";
     const char* build_options = args->debug ? "-g" : "-O3";
     const char* warnings = "-Wall -Werror -Wextra";
     const char* include_dirs = "-Isrc";
