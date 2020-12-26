@@ -8,6 +8,8 @@ game_state_t* game_state_init(size_t width, size_t height)
     SDL_Init(SDL_INIT_VIDEO);
     game_state->window = window_create("SPACE!", width, height);
     game_state->pixel_buffer = bitmap_init(width, height);
+    game_state->entities = dynarr_init(512);
+    game_state->delta_t = 0.3f;
 
     SDL_Renderer* renderer = game_state->window->renderer;
 
@@ -31,6 +33,24 @@ void game_state_destroy(game_state_t* game_state)
     SDL_Quit();
 }
 
+
+void game_state_update(game_state_t* game_state) {
+    for (size_t i = 0; i < game_state->entities->size; ++i) {
+        entity_t* e = dynarr_at(entity_t, game_state->entities, i);
+        e->update_func(e, game_state);
+    }
+}
+
+
+void game_state_render(game_state_t* game_state) {
+    memset(game_state->pixel_buffer->data, 0, sizeof(u32) * game_state->pixel_buffer->width * game_state->pixel_buffer->height);
+    for (size_t i = 0; i < game_state->entities->size; ++i) {
+        entity_t* e = dynarr_at(entity_t, game_state->entities, i);
+        e->draw_func(e, game_state);
+    }
+}
+
+
 void game_state_present(game_state_t* game_state)
 {
     int err = SDL_UpdateTexture(
@@ -50,4 +70,9 @@ void game_state_present(game_state_t* game_state)
         NULL);
 
     SDL_RenderPresent(game_state->window->renderer);
+}
+
+void game_state_push_entity(game_state_t* game_state, entity_t* entity)
+{
+    dynarr_push(game_state->entities, entity);
 }

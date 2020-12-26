@@ -4,6 +4,9 @@
 #include <assert.h>
 #include "base_defines.h"
 #include "game_state.h"
+#include "color.h"
+#include "star_field.h"
+#include "range.h"
 
 void game_process_events(game_state_t* game_state)
 {
@@ -25,13 +28,11 @@ void game_process_events(game_state_t* game_state)
 }
 
 
-u32 random_color()
+rgba_t random_color()
 {
-    u32 r = rand() & 0xF0000000;
-    u32 g = rand() & 0x00F00000;
-    u32 b = rand() & 0x0000F000;
-    u8 a = 0x000000ff;
-    return r | g | b | a;
+    rgba_t min_color = rgba(0x10, 0x10, 0x10, 0xff);
+    rgba_t max_color = rgba(0xf0, 0xf0, 0xf0, 0xff);
+    return rgba_random(min_color, max_color);
 }
 
 
@@ -42,7 +43,7 @@ void render_game(game_state_t* game_state)
     const size_t height = pixels->height;
     for (size_t y = 0; y < height; ++y)
     {
-        u32 c = random_color();
+        rgba_t c = random_color();
         for (size_t x = 0; x < width; ++x)
         {
             pixels->data[y * width + x] = c;
@@ -61,13 +62,21 @@ int main()
     printf("SPACE!\n");
 
     game_state_t* game_state = game_state_init(480, 270);
+    star_field_t* star_field = star_field_init(
+        recti(0, 0, 480, 270),
+        100,
+        rangef(1, 4),
+        range_u32(0x444444ff, 0xffffffff));
+
+    game_state_push_entity(game_state, (entity_t*)star_field);
+
 
     while (game_state->is_running)
     {
         game_process_events(game_state);
 
-        update_game(game_state);
-        render_game(game_state);
+        game_state_update(game_state);
+        game_state_render(game_state);
 
         game_state_present(game_state);
 

@@ -8,7 +8,7 @@ flags = [
   '-Wno-long-long',
   '-Wno-variadic-macros',
   '-DNDEBUG',
-  '-std=c99',
+  '-std=c11',
   '-Iunity/src',
   ]
 
