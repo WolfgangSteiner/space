@@ -20,6 +20,6 @@ add_library(citrine STATIC
 set_property(TARGET citrine PROPERTY C_STANDARD 11)
 
 add_executable(space src/main.c src/star_field.c)
-target_link_libraries(space citrine SDL2)
+target_link_libraries(space citrine SDL2 m)
 set_property(TARGET space PROPERTY C_STANDARD 11)
 

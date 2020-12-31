@@ -10,6 +10,7 @@ game_state_t* game_state_init(size_t width, size_t height)
     game_state->pixel_buffer = bitmap_init(width, height);
     game_state->entities = dynarr_init(512);
     game_state->delta_t = 0.3f;
+    game_state->screen_rect = (recti_t){ 0, 0, width, height };
 
     SDL_Renderer* renderer = game_state->window->renderer;
 

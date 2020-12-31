@@ -10,6 +10,7 @@ typedef struct game_state_s {
     bool is_running;
     window_t* window;
     bitmap_t* pixel_buffer;
+    recti_t screen_rect;
     float delta_t;
     dynarr_t* entities;
 } game_state_t;

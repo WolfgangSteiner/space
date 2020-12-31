@@ -4,15 +4,21 @@
 #include "color.h"
 #include "base_defines.h"
 #include "vec2i.h"
+#include "random.h"
+#include "math.h"
+
 
 static void spawn_star(star_field_t* star_field, star_t* star, rangei_t y_range) {
     size_t width = rect_width(star_field->entity.bounding_box);
     star->pos.x = (float)(rand() % width);
     star->pos.y = rangei_random(y_range); 
-    rgba_t min_color, max_color;
-    min_color.val = star_field->color_range.start;
-    max_color.val = star_field->color_range.end;
-    star->color = rgba_random(min_color, max_color);
+    float distance_factor = 50.0f;
+    float distance = randf_uniform_range(0.0f, 100.0f);
+    float brightness = 1.0f * expf(-distance / distance_factor);
+    u8 color_value = (u8)(255.0f * brightness);
+    star->color.r = color_value;
+    star->color.g = color_value;
+    star->color.b = color_value;
     star->vel.y = rangef_random(star_field->velocity_range);
 }
 
