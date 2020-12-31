@@ -8,6 +8,17 @@
 #include "math.h"
 
 
+float clamp_value(float val, float min_val, float max_val)
+{
+    return MIN(MAX(val, min_val), max_val);
+}
+
+u8 clamp_color_component(float brightness, float factor)
+{
+    return (u8)clamp_value(255.0f * brightness * factor, 0.0f, 255.0f);
+}
+
+
 static void spawn_star(star_field_t* star_field, star_t* star, rangei_t y_range) {
     size_t width = rect_width(star_field->entity.bounding_box);
     star->pos.x = (float)(rand() % width);
@@ -15,10 +26,11 @@ static void spawn_star(star_field_t* star_field, star_t* star, rangei_t y_range)
     float distance_factor = 50.0f;
     float distance = randf_uniform_range(0.0f, 100.0f);
     float brightness = 1.0f * expf(-distance / distance_factor);
-    u8 color_value = (u8)(255.0f * brightness);
-    star->color.r = color_value;
-    star->color.g = color_value;
-    star->color.b = color_value;
+    float red_factor = randf_uniform_range(0.7f, 1.3f);
+    float blue_factor = 1.0f / red_factor;
+    star->color.r = clamp_color_component(brightness, red_factor);
+    star->color.g = (u8)(255.0f * brightness);
+    star->color.b = clamp_color_component(brightness, blue_factor);
     star->vel.y = rangef_random(star_field->velocity_range);
 }
 
