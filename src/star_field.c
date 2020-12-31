@@ -9,8 +9,9 @@ static void spawn_star(star_field_t* star_field, star_t* star, rangei_t y_range)
     size_t width = rect_width(star_field->entity.bounding_box);
     star->pos.x = (float)(rand() % width);
     star->pos.y = rangei_random(y_range); 
-    rgba_t min_color = (rgba_t)star_field->color_range.start;
-    rgba_t max_color = (rgba_t)star_field->color_range.end;
+    rgba_t min_color, max_color;
+    min_color.val = star_field->color_range.start;
+    max_color.val = star_field->color_range.end;
     star->color = rgba_random(min_color, max_color);
     star->vel.y = rangef_random(star_field->velocity_range);
 }
