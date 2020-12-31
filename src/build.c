@@ -40,7 +40,7 @@ int main(int argc, char** argv)
         "src/main.c src/bitmap.c src/window.c src/game_state.c "
         "src/vec2f.c src/dynarr.c "
         "src/color.c src/range.c src/star_field.c";
-    const char* build_options = args->debug ? "-g" : "-O3";
+    const char* build_options = args->debug ? "-g" : "-O2";
     const char* warnings = "-Wall -Werror -Wextra";
     const char* include_dirs = "-Isrc";
     const char* link_libraries = "-lm -lSDL2";
@@ -48,10 +48,8 @@ int main(int argc, char** argv)
     snprintf(cmd, 1024, "gcc %s %s %s %s -o bin/%s %s",
             build_options, warnings, include_dirs, link_libraries, exec_name, src_files);
 
-    while (result)
+    while ((result = system(cmd)))
     {
-        //system("clear");
-        result = system(cmd); 
         sleep(1);
     }
 
