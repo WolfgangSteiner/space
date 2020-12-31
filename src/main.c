@@ -59,14 +59,12 @@ void update_game(game_state_t* game_state)
 
 int main()
 {   
-    printf("SPACE!\n");
-
     game_state_t* game_state = game_state_init(480, 270);
     star_field_t* star_field = star_field_init(
         recti(0, 0, 480, 270),
         100,
-        rangef(1, 4),
-        range_u32(0x444444ff, 0xffffffff));
+        rangef(1, 8),
+        range_u32(0xddddddff, 0xffffffff));
 
     game_state_push_entity(game_state, (entity_t*)star_field);
 
