@@ -12,4 +12,8 @@
 #define MUnused(A) (void)(A)
 #define MInvalid() assert(false);
 
+#define SHIFT_BYTE(TYPE, VAL, SHIFT) (((TYPE)(VAL)) << SHIFT)
+#define U16_CONSTANT(A, B) (SHIFT_BYTE(u16, B, 8) | ((u16)A))
+#define U32_CONSTANT(A, B, C, D) (SHIFT_BYTE(u32, D, 24) | SHIFT_BYTE(u32, C, 16) | SHIFT_BYTE(u32, B, 8) | (u32) A)
+
 #endif

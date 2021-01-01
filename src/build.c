@@ -39,6 +39,7 @@ int main(int argc, char** argv)
     const char* src_files = 
         "src/main.c src/bitmap.c src/window.c src/game_state.c "
         "src/vec2f.c src/dynarr.c "
+        "src/random.c "
         "src/color.c src/range.c src/star_field.c";
     const char* build_options = args->debug ? "-g" : "-O2";
     const char* warnings = "-Wall -Werror -Wextra";

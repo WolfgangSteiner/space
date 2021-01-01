@@ -59,6 +59,8 @@ void update_game(game_state_t* game_state)
 
 int main()
 {   
+    bitmap_t* spaceship = bitmap_read("assets/spaceship.pam");
+
     game_state_t* game_state = game_state_init(480, 270);
     star_field_t* star_field = star_field_init(
         game_state->screen_rect,
@@ -76,10 +78,15 @@ int main()
         game_state_update(game_state);
         game_state_render(game_state);
 
+        recti_t src_rect = recti(0, 0, spaceship->width, spaceship->height);
+        vec2i_t pos = vec2i(480 / 2 - 16, 270 - 64); 
+        bitmap_blit(game_state->pixel_buffer, pos, spaceship, src_rect);
+
         game_state_present(game_state);
 
         SDL_Delay(16);
     }
 
     game_state_destroy(game_state);
+    bitmap_free(spaceship);
 }
