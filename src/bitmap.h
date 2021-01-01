@@ -17,5 +17,8 @@ bitmap_t* bitmap_read(const char* file_name);
 void bitmap_free(bitmap_t* bitmap);
 void bitmap_set_pixel(bitmap_t* bitmap, vec2i_t pos, rgba_t color);
 void bitmap_blit(bitmap_t* dst, vec2i_t pos, bitmap_t* src, recti_t src_rect);
+void bitmap_mul_alpha(bitmap_t* dst, u8 alpha);
+
+
 
 #endif

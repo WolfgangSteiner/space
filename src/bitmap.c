@@ -157,6 +157,36 @@ end:
 } 
 
 
+#define BITMAP_BLEND_COMPONENT(COMP) (((u32)src.COMP * (u32)src.a * 255) + ((u32)dst.COMP * (u32)dst.a * (0xff - src.a))) / res.a / 255
+
+#define BITMAP_BLEND_COMPONENT_ONE(COMP) (((u32)src.COMP * (u32)src.a) + ((u32)dst.COMP * (0xff - src.a))) / 255
+
+rgba_t alpha_blend(rgba_t dst, rgba_t src)
+{
+    rgba_t res;
+    res.a = (((u32)src.a * 255) + (dst.a * (0xff - src.a))) / 255;
+    if (res.a == 0) {
+        res.val = 0x0;
+    } else {
+        res.r = BITMAP_BLEND_COMPONENT(r);
+        res.g = BITMAP_BLEND_COMPONENT(g);
+        res.b = BITMAP_BLEND_COMPONENT(b);
+    }
+
+    return res;
+}
+
+rgba_t alpha_blend_one(rgba_t dst, rgba_t src)
+{
+    rgba_t res;
+    res.r = BITMAP_BLEND_COMPONENT_ONE(r);
+    res.g = BITMAP_BLEND_COMPONENT_ONE(g);
+    res.b = BITMAP_BLEND_COMPONENT_ONE(b);
+    res.a = 0xff;
+
+    return res;
+}
+
 void bitmap_blit(bitmap_t* dst, vec2i_t pos, bitmap_t* src, recti_t src_rect)
 {
     size_t src_x1 = MAX(0, src_rect.x1);
@@ -184,10 +214,21 @@ void bitmap_blit(bitmap_t* dst, vec2i_t pos, bitmap_t* src, recti_t src_rect)
         rgba_t* dst_ptr = dst_row_ptr;
         rgba_t* src_ptr = src_row_ptr;
         for (size_t x = dst_x1; x < dst_x2; ++x) {
-            (*dst_ptr++) = (*src_ptr++);
+            *dst_ptr = alpha_blend_one(*dst_ptr, (*src_ptr++));
+            dst_ptr++;
         }
 
         src_row_ptr += src->width;
         dst_row_ptr += dst->width;
+    }
+}
+
+void bitmap_mul_alpha(bitmap_t* bitmap, u8 alpha)
+{
+    rgba_t* dst = bitmap->data;
+    size_t num_pixels = bitmap->width * bitmap->height;
+    for (size_t i = 0; i < num_pixels; ++i) {
+        (*dst).a = ((*dst).a * alpha) / 255;
+        dst++;
     }
 }
