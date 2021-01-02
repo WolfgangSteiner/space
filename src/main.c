@@ -13,8 +13,6 @@
 
 int main()
 {   
-    bitmap_t* spaceship = bitmap_read("assets/spaceship.pam");
-
     game_state_t* game_state = game_state_init(480 * 2, 270 * 2);
     star_field_t* star_field = star_field_init(
         game_state->screen_rect,
@@ -23,7 +21,11 @@ int main()
         range_u32(0xddddddff, 0xffffffff));
 
     game_state_push_entity(game_state, (entity_t*)star_field);
-    game_state_push_entity(game_state, (entity_t*)spaceship_new());
+    spaceship_t* spaceship = spaceship_new();
+    entity_align_in_rect((entity_t*)spaceship, game_state->screen_rect, ALIGNMENT_CENTER, ALIGNMENT_BOTTOM);
+    entity_translate((entity_t*)spaceship, (vec2f_t){0.0f, -rect_height(spaceship->sprite.entity.bounding_box)});
+
+    game_state_push_entity(game_state, (entity_t*)spaceship);
 
     while (game_state->is_running)
     {
@@ -36,5 +38,4 @@ int main()
     }
 
     game_state_destroy(game_state);
-    bitmap_free(spaceship);
 }

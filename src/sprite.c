@@ -27,5 +27,6 @@ void sprite_read(sprite_t* sprite, const char* file_name)
     assert(sprite->bitmap);
     if (sprite->bitmap) {
         sprite->src_rect = (recti_t){ 0, 0, sprite->bitmap->width, sprite->bitmap->height };
+        sprite->entity.bounding_box = sprite->src_rect;
     }
 }

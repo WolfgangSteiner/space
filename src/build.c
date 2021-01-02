@@ -36,18 +36,13 @@ int main(int argc, char** argv)
     system("mkdir -p bin");
 
     const char* exec_name = "space"; 
-    const char* src_files = 
-        "src/main.c src/bitmap.c src/window.c src/game_state.c "
-        "src/vec2f.c src/dynarr.c "
-        "src/random.c "
-        "src/sprite.c "
-        "src/spaceship.c "
-        "src/color.c src/range.c src/star_field.c";
+    const char* src_files = "src/build_dependencies.c"; 
     const char* build_options = args->debug ? "-g" : "-O2";
     const char* warnings = "-Wall -Werror -Wextra";
     const char* include_dirs = "-Isrc";
     const char* link_libraries = "-lm -lSDL2";
     int result = 1;
+
     snprintf(cmd, 1024, "gcc %s %s %s %s -o bin/%s %s",
             build_options, warnings, include_dirs, link_libraries, exec_name, src_files);
 

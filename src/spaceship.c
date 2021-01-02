@@ -45,7 +45,7 @@ static void spaceship_update_func(entity_t* entity, game_state_t* game_state) {
 
 
 spaceship_t* spaceship_new() {
-    spaceship_t* spaceship = calloc(1, sizeof(spaceship));
+    spaceship_t* spaceship = calloc(1, sizeof(spaceship_t));
     sprite_read(&spaceship->sprite, "assets/spaceship.pam");
     spaceship->sprite.entity.update_func = spaceship_update_func;
     spaceship->move_deltas = (vec2f_t){4, 4};

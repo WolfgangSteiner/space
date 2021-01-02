@@ -18,5 +18,8 @@ typedef struct entity_s
 } entity_t;
 
 
+void entity_align_in_rect(entity_t* entity, recti_t rect, alignment_t x_align, alignment_t y_align);
+void entity_translate(entity_t* entity, vec2f_t translation);
+
 
 #endif
