@@ -196,6 +196,8 @@ void bitmap_blit(bitmap_t* dst, vec2i_t pos, bitmap_t* src, recti_t src_rect)
     size_t src_width = src_x2 - src_x1;
     size_t src_height = src_y2 - src_y1;
 
+    if (pos.x + (s32)src_width < 0 || pos.y + (s32)src_height < 0) return;
+
     size_t dst_x1 = MAX(0, pos.x);
     size_t dst_x2 = MIN(dst->width, pos.x + src_width);
     size_t dst_y1 = MAX(0, pos.y);

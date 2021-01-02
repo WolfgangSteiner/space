@@ -77,3 +77,61 @@ void game_state_push_entity(game_state_t* game_state, entity_t* entity)
 {
     dynarr_push(game_state->entities, entity);
 }
+
+
+static u32 map_key_from_keycode(SDL_Keycode keycode)
+{
+    u32 code = (u32)keycode;
+    if (code & 0x40000000) {
+        return (code & 0xffff) - 0x39 + 127;
+    }
+    else {
+        return code;
+    }
+}
+
+
+void game_state_process_key(game_state_t* game_state, SDL_Event event)
+{
+    SDL_Keycode key = event.key.keysym.sym;
+
+    if (key == SDLK_q)
+    {
+        game_state->is_running = false;
+    }
+
+    u32 mapped_key = map_key_from_keycode(key);
+    bool key_state = (event.type == SDL_KEYDOWN); 
+
+    if (mapped_key < GAME_STATE_NUM_KEY_STATES) {
+        game_state->key_states[mapped_key] = key_state;
+    }
+}
+
+
+bool game_state_is_key_down(game_state_t* game_state, SDL_Keycode key)
+{
+    u32 mapped_key = map_key_from_keycode(key);
+    if (mapped_key < GAME_STATE_NUM_KEY_STATES) {
+        return game_state->key_states[mapped_key];
+    } else {
+        return false;
+    }
+}
+
+
+void game_state_process_events(game_state_t* game_state)
+{
+    SDL_Event event;
+    while (SDL_PollEvent(&event))
+    {   
+        if (event.type == SDL_QUIT)
+        {
+            game_state->is_running = false;
+        } 
+        else if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
+        {
+            game_state_process_key(game_state, event);
+        }
+    }
+}
