@@ -63,7 +63,7 @@ void star_field_draw(entity_t* entity, game_state_t* game_state) {
 }
 
 
-star_field_t* star_field_init(
+star_field_t* star_field_new(
     recti_t bounding_box,
     size_t num_stars,
     rangef_t velocity_range,
@@ -73,6 +73,7 @@ star_field_t* star_field_init(
     star_field->num_stars = num_stars;
     star_field->velocity_range = velocity_range;
     star_field->color_range = color_range;
+    entity_init(&star_field->entity);
     star_field->entity.bounding_box = bounding_box;
     star_field->entity.update_func = star_field_update;
     star_field->entity.draw_func = star_field_draw;

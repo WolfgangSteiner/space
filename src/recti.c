@@ -37,3 +37,15 @@ recti_t recti_align(recti_t rect, recti_t relative_to_rect, alignment_t x_align,
     rangei_t y_range = rangei_align(recti_get_y_range(rect), recti_get_y_range(relative_to_rect), y_align);    
     return (recti_t){ x_range.start, y_range.start, x_range.end, y_range.end };
 }
+
+
+recti_t recti_make_with_position_and_size(vec2i_t pos, vec2i_t size) {
+    return recti(pos.x, pos.y, pos.x + size.x, pos.y + size.y);
+}
+
+
+bool recti_is_point_inside(recti_t rect, vec2i_t point) {
+    return point.x >= rect.x1 && point.x < rect.x2 && point.y >= rect.y1 && point.y < rect.y2;
+}
+
+

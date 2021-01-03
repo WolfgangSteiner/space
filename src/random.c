@@ -19,3 +19,9 @@ float randf_uniform_range(float a, float b)
     if (diff == 0.0f) return a;
     return randf_uniform() * diff + a; 
 }
+
+
+s32 randi_uniform(s32 max_value)
+{
+    return (s32)(randd_uniform() * max_value);
+}

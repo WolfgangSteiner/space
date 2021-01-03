@@ -1,7 +1,8 @@
 #ifndef VEC2F_H_
 #define VEC2F_H_
 #include "basetypes.h"
-
+#include "vec2i.h"
+#include "math.h"
 
 typedef struct
 {
@@ -18,4 +19,7 @@ inline void vec2f_add(vec2f_t* a, vec2f_t b) { a->x += b.x; a->y += b.y; }
 inline void vec2f_sub(vec2f_t* a, vec2f_t b) { a->x -= b.x; a->y -= b.y; }
 inline void vec2f_smul(vec2f_t* a, float b) { a->x *= b; a->y *= b; }
 inline void vec2f_smula(vec2f_t* a, vec2f_t b, float c) { a->x += b.x * c; a->y += b.y * c; }
+vec2i_t vec2f_round(vec2f_t v);
+
 #endif
+

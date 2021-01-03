@@ -3,6 +3,7 @@
 #include "basetypes.h"
 #include "alignment.h"
 #include "range.h"
+#include "vec2i.h"
 
 typedef struct 
 {
@@ -24,5 +25,8 @@ void recti_set_x_range(recti_t* rect, rangei_t x_range);
 void recti_set_y_range(recti_t* rect, rangei_t y_range);
 
 recti_t recti_align(recti_t rect, recti_t relative_to_rect, alignment_t x_align, alignment_t y_align);
+recti_t recti_make_with_position_and_size(vec2i_t pos, vec2i_t size);
+
+bool recti_is_point_inside(recti_t rect, vec2i_t point);
 
 #endif

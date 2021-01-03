@@ -1,7 +1,7 @@
 #include "game_state.h"
 #include "base_defines.h"
 
-game_state_t* game_state_init(size_t width, size_t height)
+game_state_t* game_state_new(size_t width, size_t height)
 {
     game_state_t* game_state = calloc(1, sizeof(game_state_t));
     game_state->is_running = true;
@@ -9,9 +9,9 @@ game_state_t* game_state_init(size_t width, size_t height)
     game_state->window = window_create("SPACE!", width, height);
     game_state->pixel_buffer = bitmap_init(width, height);
     game_state->entities = dynarr_init(512);
+    game_state->behaviors = dynarr_init(16);
     game_state->delta_t = 0.3f;
     game_state->screen_rect = (recti_t){ 0, 0, width, height };
-
     SDL_Renderer* renderer = game_state->window->renderer;
 
     game_state->window->texture = 
@@ -30,12 +30,27 @@ game_state_t* game_state_init(size_t width, size_t height)
 
 void game_state_destroy(game_state_t* game_state)
 {
+    for (size_t i = 0; i < game_state->entities->size; i++) {
+        entity_t* entity = dynarr_at(entity_t, game_state->entities, i);
+        assert(entity->free_func);
+        entity->free_func(entity);
+    }
+
+    for (size_t i = 0; i < game_state->behaviors->size; i++) {
+        game_behavior_t* behavior = dynarr_at(game_behavior_t, game_state->behaviors, i);
+        assert(behavior->free_func);
+        behavior->free_func(behavior);
+    }
+
+    free(game_state->entities);
+    free(game_state->behaviors);
+    bitmap_free(game_state->pixel_buffer); 
     window_destroy(game_state->window);
     SDL_Quit();
 }
 
 
-void game_state_update(game_state_t* game_state) {
+static void game_state_update_entities(game_state_t* game_state) {
     for (size_t i = 0; i < game_state->entities->size; ++i) {
         entity_t* e = dynarr_at(entity_t, game_state->entities, i);
         e->update_func(e, game_state);
@@ -43,11 +58,30 @@ void game_state_update(game_state_t* game_state) {
 }
 
 
+static void game_state_update_behaviors(game_state_t* game_state) {
+    for (size_t i = 0; i < game_state->behaviors->size; ++i) {
+        game_behavior_t* b = dynarr_at(game_behavior_t, game_state->behaviors, i);
+        b->update_func(b, game_state);
+    }
+}
+
+
+void game_state_update(game_state_t* game_state) {
+    u32 current_tick = SDL_GetTicks();
+    game_state->delta_ticks = current_tick - game_state->current_tick;
+    game_state->current_tick = current_tick;
+    game_state_update_behaviors(game_state);
+    game_state_update_entities(game_state);
+}
+
+
 void game_state_render(game_state_t* game_state) {
     memset(game_state->pixel_buffer->data, 0, sizeof(u32) * game_state->pixel_buffer->width * game_state->pixel_buffer->height);
     for (size_t i = 0; i < game_state->entities->size; ++i) {
         entity_t* e = dynarr_at(entity_t, game_state->entities, i);
-        e->draw_func(e, game_state);
+        if (e->status == ENTITY_STATUS_ALIVE) {
+            e->draw_func(e, game_state);
+        }
     }
 }
 
@@ -75,7 +109,40 @@ void game_state_present(game_state_t* game_state)
 
 void game_state_push_entity(game_state_t* game_state, entity_t* entity)
 {
+    entity->id = game_state->current_id++;
+    entity->time_stamp = game_state->current_tick;
     dynarr_push(game_state->entities, entity);
+}
+
+
+void game_state_push_behavior(game_state_t* game_state, game_behavior_t* behavior)
+{
+    dynarr_push(game_state->behaviors, behavior);
+}
+
+
+static void game_state_clean_up_entities(game_state_t* game_state)
+{
+    size_t insert_idx = 0;
+    void** entities = game_state->entities->data;
+    size_t num_deleted_entities = 0;
+    for (size_t idx = 0; idx < game_state->entities->size; idx++) {
+        entity_t* e = (entity_t*)entities[idx];
+        if (e->status == ENTITY_STATUS_ALIVE) {
+            entities[insert_idx] = entities[idx];
+            insert_idx++;
+        } else {
+            e->free_func(e);
+            num_deleted_entities++;
+        }
+    }
+    game_state->entities->size -= num_deleted_entities;
+}
+
+
+void game_state_clean_up(game_state_t* game_state)
+{
+    game_state_clean_up_entities(game_state);
 }
 
 
@@ -135,3 +202,17 @@ void game_state_process_events(game_state_t* game_state)
         }
     }
 }
+
+
+size_t game_state_count_entities_of_type(game_state_t* game_state, size_t type_id) {
+    size_t count = 0;
+    for (size_t i = 0; i < game_state->entities->size; ++i) {
+        entity_t* e = dynarr_at(entity_t, game_state->entities, i);
+        if (e->type_id == type_id) {
+            count++;
+        }
+    }
+    return count;
+}
+
+

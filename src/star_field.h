@@ -24,7 +24,7 @@ typedef struct
 } star_field_t;
 
 
-star_field_t* star_field_init(
+star_field_t* star_field_new(
     recti_t bounding_box,
     size_t num_stars,
     rangef_t velocity_range,

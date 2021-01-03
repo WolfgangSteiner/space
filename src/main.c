@@ -8,13 +8,13 @@
 #include "star_field.h"
 #include "range.h"
 #include "spaceship.h"
-
+#include "cycloid_wave.h"
 
 
 int main()
 {   
-    game_state_t* game_state = game_state_init(480 * 2, 270 * 2);
-    star_field_t* star_field = star_field_init(
+    game_state_t* game_state = game_state_new(480 * 2, 270 * 2);
+    star_field_t* star_field = star_field_new(
         game_state->screen_rect,
         100,
         rangef(1, 8),
@@ -25,6 +25,7 @@ int main()
     entity_align_in_rect((entity_t*)spaceship, game_state->screen_rect, ALIGNMENT_CENTER, ALIGNMENT_BOTTOM);
     entity_translate((entity_t*)spaceship, (vec2f_t){0.0f, -rect_height(spaceship->sprite.entity.bounding_box)});
 
+    game_state_push_behavior(game_state, (game_behavior_t*)cycloid_wave_new());
     game_state_push_entity(game_state, (entity_t*)spaceship);
 
     while (game_state->is_running)
@@ -33,6 +34,7 @@ int main()
         game_state_update(game_state);
         game_state_render(game_state);
         game_state_present(game_state);
+        game_state_clean_up(game_state);
 
         //SDL_Delay(16);
     }
