@@ -33,12 +33,12 @@ void sprite_update_func(entity_t* entity, struct game_state_s* game_state) {
 
     if (delta_ticks > sprite->frame_time) {
         if (sprite->animation_type == SPRITE_ANIMATION_PING_PONG) {
-            sprite->cell_idx.x += sprite->animation_direction;
             if (sprite->cell_idx.x == 0) {
                 sprite->animation_direction = 1;
             } else if (sprite->cell_idx.x == (s32)sprite->num_cell_cols - 1) {
                 sprite->animation_direction = -1;
             }
+            sprite->cell_idx.x += sprite->animation_direction;
         } else if (sprite->animation_type == SPRITE_ANIMATION_CYCLE) {
             sprite->cell_idx.x 
                 = (sprite->cell_idx.x + sprite->num_cell_cols + sprite->animation_direction) % sprite->num_cell_cols;
