@@ -23,6 +23,7 @@ typedef struct
   sprite_animation_t animation_type;
   u32 frame_time;
   s32 animation_direction;
+  bool retains_bitmap;
 } sprite_t;
 
 

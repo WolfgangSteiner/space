@@ -16,7 +16,7 @@ void cycloid_wave_update_func(game_behavior_t* behavior, game_state_t* game_stat
         s32 d100 = randi_uniform(100);
         if (d100 > 95) {
             s32 x = randi_uniform(rect_width(game_state->screen_rect));
-            sprite_t* cycloid = cycloid_new();
+            sprite_t* cycloid = cycloid_new(game_state);
             cycloid->entity.pos.x = x;
             cycloid->entity.pos.y = -cycloid->cell_size.y;
             game_state_push_entity(game_state, (entity_t*)cycloid);

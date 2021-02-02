@@ -14,9 +14,12 @@ sprite_t* sprite_alloc() {
     return calloc(1, sizeof(sprite_t));
 }
 
+
 static void sprite_free_func(entity_t* entity) {
     sprite_t* sprite = (sprite_t*)entity;
-    bitmap_free(sprite->bitmap);
+    if (sprite->retains_bitmap) {
+        bitmap_free(sprite->bitmap);
+    }
     free(entity);
 }
 
@@ -60,13 +63,14 @@ void sprite_init(sprite_t* sprite) {
 }
 
 
-void sprite_read(sprite_t* sprite, const char* file_name)
-{
+void sprite_read(sprite_t* sprite, const char* file_name) {
     sprite_init(sprite);
     sprite->bitmap = bitmap_read(file_name);
+    sprite->retains_bitmap = true;
     assert(sprite->bitmap);
     if (sprite->bitmap) {
         sprite->src_rect = (recti_t){ 0, 0, sprite->bitmap->width, sprite->bitmap->height };
         sprite->entity.bounding_box = sprite->src_rect;
     }
 }
+

@@ -6,6 +6,7 @@
 #include "entity.h"
 #include "dynarr.h"
 #include "game_behavior.h"
+#include "bitmap_cache.h"
 
 #define GAME_STATE_NUM_KEY_STATES 346
 
@@ -21,6 +22,7 @@ typedef struct game_state_s {
     size_t current_id;
     u32 current_tick;
     u32 delta_ticks;
+    bitmap_cache_t* bitmap_cache;
 } game_state_t;
 
 

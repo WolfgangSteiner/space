@@ -8,8 +8,9 @@ game_state_t* game_state_new(size_t width, size_t height)
     SDL_Init(SDL_INIT_VIDEO);
     game_state->window = window_create("SPACE!", width, height);
     game_state->pixel_buffer = bitmap_init(width, height);
-    game_state->entities = dynarr_init(512);
-    game_state->behaviors = dynarr_init(16);
+    game_state->entities = dynarr_new(512);
+    game_state->behaviors = dynarr_new(16);
+    game_state->bitmap_cache = bitmap_cache_new();
     game_state->delta_t = 0.3f;
     game_state->screen_rect = (recti_t){ 0, 0, width, height };
     SDL_Renderer* renderer = game_state->window->renderer;

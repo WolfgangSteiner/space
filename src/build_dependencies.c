@@ -1,5 +1,6 @@
 #include "bitmap.c"
 #include "color.c"
+#include "bitmap_cache.c"
 #include "cycloid.c"
 #include "cycloid_wave.c"
 #include "dynarr.c"
@@ -16,3 +17,4 @@
 #include "vec2f.c"
 #include "vec2i.c"
 #include "window.c"
+

@@ -1,6 +1,16 @@
 #include "cycloid.h"
 #include "game_state.h"
 #include "random.h"
+#include <assert.h>
+
+
+void cycloid_load_assets(game_state_t* game_state) {
+    bitmap_cache_insert(
+        game_state->bitmap_cache,
+        "assets/cycloid.pam",
+        CYCLOID_ID);
+}    
+
 
 static void cycloid_update_func(entity_t* entity, game_state_t* game_state)
 {
@@ -11,10 +21,15 @@ static void cycloid_update_func(entity_t* entity, game_state_t* game_state)
     }
 }
 
-sprite_t* cycloid_new()
+
+sprite_t* cycloid_new(game_state_t* game_state)
 {
+    (void)game_state;
     sprite_t* cycloid = sprite_alloc();
-    sprite_read(cycloid, "assets/cycloid.pam");
+    sprite_init(cycloid);
+    cycloid->bitmap = bitmap_cache_get(game_state->bitmap_cache, CYCLOID_ID);
+    assert(cycloid->bitmap);
+    cycloid->retains_bitmap = false;
     cycloid->cell_size = (vec2i_t){16, 16};
     cycloid->src_rect = recti(0, 0, 16, 16);
     cycloid->num_cell_rows = 1;
